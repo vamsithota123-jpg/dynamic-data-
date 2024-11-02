@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Data Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Product Data Visualizer</h1>
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Product Name" required>
+        <input type="number" id="productPrice" placeholder="Product Price" required>
+        <input type="number" id="productRating" placeholder="Product Rating (0-5)" min="0" max="5" required>
+        <button type="submit">Add Product</button>
+    </form>
+    <div class="sort-buttons">
+        <button id="sortPrice">Sort by Price</button>
+        <button id="sortRating">Sort by Rating</button>
+    </div>
+    <div id="graphs">
+        <h2>Price Graph</h2>
+        <div id="priceGraph" class="graph"></div>
+        <h2>Rating Graph</h2>
+        <div id="ratingGraph" class="graph"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input {
+    margin: 0 10px;
+    padding: 10px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.graph {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.bar {
+    width: 20px;
+    margin: 0 5px;
+    display: inline-block;
+    text-align: center;
+    color: white;
+    border-radius: 3px;
+}
+
+.sort-buttons {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.sort-buttons button {
+    margin: 0 10px;
+}
+
+</style>
+<script>
+    const productForm = document.getElementById('productForm');
+const priceGraph = document.getElementById('priceGraph');
+const ratingGraph = document.getElementById('ratingGraph');
+
+let products = [];
+
+// Function to render the graphs
+function renderGraphs() {
+    priceGraph.innerHTML = '';
+    ratingGraph.innerHTML = '';
+
+    products.forEach(product => {
+        const priceBar = document.createElement('div');
+        priceBar.className = 'bar';
+        priceBar.style.height = `${product.price}px`;
+        priceBar.style.backgroundColor = 'green';
+        priceBar.textContent = product.price;
+
+        const ratingBar = document.createElement('div');
+        ratingBar.className = 'bar';
+        ratingBar.style.height = `${product.rating * 50}px`; // Scale rating to height
+        ratingBar.style.backgroundColor = 'blue';
+        ratingBar.textContent = product.rating;
+
+        priceGraph.appendChild(priceBar);
+        ratingGraph.appendChild(ratingBar);
+    });
+}
+
+// Function to handle form submission
+productForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const productName = document.getElementById('productName').value;
+    const productPrice = parseFloat(document.getElementById('productPrice').value);
+    const productRating = parseFloat(document.getElementById('productRating').value);
+
+    products.push({ name: productName, price: productPrice, rating: productRating });
+    renderGraphs();
+
+    productForm.reset(); // Clear form inputs
+});
+
+// Sort by price
+document.getElementById('sortPrice').addEventListener('click', () => {
+    products.sort((a, b) => a.price - b.price);
+    renderGraphs();
+});
+
+// Sort by rating
+document.getElementById('sortRating').addEventListener('click', () => {
+    products.sort((a, b) => a.rating - b.rating);
+    renderGraphs();
+});
+
+</script>
